@@ -7,6 +7,7 @@ from .serializers import KonlpySerializer
 from rest_framework.exceptions import APIException
 from konlpy.tag import Hannanum
 hannanum = Hannanum()
+import time
 
 
 class Success(APIException):
@@ -24,9 +25,10 @@ class KonlpyView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         text = request.data['text']
         print(text)
+        start_time = time.time()
         k2 = [y + " " if y.isascii() else y for y in hannanum.morphs(text)]
-        # 
-        data = {'words': k2}
+        endtime = time.time() - start_time
+        data = {'words': k2, 'time': endtime}
         raise Success(data)
     
 
