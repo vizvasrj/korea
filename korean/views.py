@@ -25,7 +25,7 @@ class KonlpyView(generics.RetrieveUpdateDestroyAPIView):
         text = request.data['text']
         print(text)
         k2 = [y + " " if y.isascii() else y for y in hannanum.morphs(text)]
-
+        # 
         data = {'words': k2}
         raise Success(data)
     
