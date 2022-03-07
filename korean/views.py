@@ -8,6 +8,7 @@ from rest_framework.exceptions import APIException
 from konlpy.tag import Hannanum
 hannanum = Hannanum()
 import time
+import gc
 
 
 class Success(APIException):
@@ -29,6 +30,7 @@ class KonlpyView(generics.RetrieveUpdateDestroyAPIView):
         k2 = [y + " " if y.isascii() else y for y in hannanum.morphs(text)]
         endtime = time.time() - start_time
         data = {'words': k2, 'time': endtime}
+        gc.collect()
         raise Success(data)
     
 
