@@ -5,11 +5,11 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .serializers import KonlpySerializer
 from rest_framework.exceptions import APIException
-from konlpy.tag import Hannanum
-hannanum = Hannanum()
 import time
-import gc
-
+from gluonnlp.data import SentencepieceTokenizer
+from .kobert import get_tokenizer
+tok_path = get_tokenizer()
+sp = SentencepieceTokenizer(tok_path)
 
 class Success(APIException):
     status_code = status.HTTP_202_ACCEPTED
@@ -25,12 +25,10 @@ class KonlpyView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         text = request.data['text']
-        print(text)
         start_time = time.time()
-        k2 = [y + " " if y.isascii() else y for y in hannanum.morphs(text)]
+        k2 = "".join(sp(text)).split("▁")
         endtime = time.time() - start_time
         data = {'words': k2, 'time': endtime}
-        gc.collect()
         raise Success(data)
     
 
